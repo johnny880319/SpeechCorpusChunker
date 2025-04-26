@@ -1,0 +1,13 @@
+paths:
+  temp_dir: temp
+  converted_wav_dir: temp/converted_wav
+  data_storage_dir: data_storage
+  raw_media_dir: data_storage/raw_media
+  resulted_corpus_dir: data_storage/result/corpus
+
+pipeline:
+  sample_rate: 16000
+  vad:
+    threshold: 0.5
+    min_silence_len: 0.3  # seconds
+  asr_model: small

@@ -1,0 +1,6 @@
+PyYAML
+torch
+dacite
+torchaudio
+faster-whisper
+soundfile

@@ -24,22 +24,38 @@ class YouTubeReader(AbstractReader):
         os.makedirs(output_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         short_id = str(uuid4())
-        filename = f"{timestamp}_{short_id}.mp4"
-        output_path = os.path.join(output_dir, filename)
+        # use placeholder for extension, let yt-dlp choose proper ext
+        filename_tmpl = f"{timestamp}_{short_id}.%(ext)s"
+        output_template = os.path.join(output_dir, filename_tmpl)
 
-        subprocess.run([
-            'yt-dlp',
-            '-o', output_path,
-            url
-        ], check=True)
+        try:
+            subprocess.run([
+                'yt-dlp',
+                '-o', output_template,
+                url
+            ], check=True)
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                "yt-dlp 執行檔未找到，請先透過 'pip install yt-dlp' 安裝並確認可執行於 PATH 中。"
+            )
 
-        return output_path
+        # locate the actual downloaded file with correct extension
+        for fname in os.listdir(output_dir):
+            if fname.startswith(f"{timestamp}_{short_id}."):
+                return os.path.join(output_dir, fname)
+        raise RuntimeError(f"下載完成但找不到檔案: {timestamp}_{short_id}")
 
     def _convert_video_to_wav(self, video_path: str) -> str:
         """
         Delegate wav conversion to FileReader.
         """
         return self._file_reader.convert_to_wav(video_path)
+
+    def download(self, url: str) -> str:
+        """
+        Download a YouTube video and return the local file path.
+        """
+        return self._download_video(url)
 
     def convert_to_wav(self, url: str) -> str:
         """

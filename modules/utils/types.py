@@ -4,6 +4,7 @@ from dataclasses import dataclass
 class PathsConfig:
     temp_dir: str
     converted_wav_dir: str
+    chunked_wav_dir: str  # new: VAD chunk output directory
     data_storage_dir: str
     raw_media_dir: str
     resulted_corpus_dir: str

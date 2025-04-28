@@ -1,6 +1,7 @@
 paths:
   temp_dir: temp
   converted_wav_dir: temp/converted_wav
+  chunked_wav_dir: temp/chunked_wav   # 新增 VAD 切分後的音檔存放資料夾
   data_storage_dir: data_storage
   raw_media_dir: data_storage/raw_media
   resulted_corpus_dir: data_storage/result/corpus

@@ -4,6 +4,7 @@ import threading
 import os
 import winsound
 from concurrent.futures import ThreadPoolExecutor
+import shutil
 
 from .base_gui import BaseGUI
 from modules.input.file_reader import FileReader
@@ -106,16 +107,27 @@ class TkinterApp(BaseGUI):
         winsound.PlaySound(path, winsound.SND_FILENAME)
 
     def _save_next(self):
-        # save edited transcript and move to next
+        # save edited transcript and corresponding wav to nested folder
         text = self.text_widget.get('1.0', tk.END).strip()
-        # extract base filename
-        name = os.path.basename(self.clips[self.current])
-        base = os.path.splitext(name)[0]
-        fname = f'{base}.txt'
-        out_path = os.path.join(self.cfg.paths.resulted_corpus_dir, fname)
-        os.makedirs(self.cfg.paths.resulted_corpus_dir, exist_ok=True)
-        with open(out_path, 'w', encoding='utf-8') as f:
+        clip_path = self.clips[self.current]
+        name = os.path.basename(clip_path)
+        parts = name.split('_')
+        # determine subdirectory based on timestamp and uuid
+        if len(parts) >= 3:
+            timestamp, uid = parts[0], parts[1]
+            subdir = os.path.join(self.cfg.paths.resulted_corpus_dir, timestamp, uid)
+        else:
+            subdir = self.cfg.paths.resulted_corpus_dir
+        os.makedirs(subdir, exist_ok=True)
+        # copy wav file into subdir
+        shutil.copy2(clip_path, subdir)
+        # write transcript
+        base, _ = os.path.splitext(name)
+        txt_path = os.path.join(subdir, f'{base}.txt')
+        with open(txt_path, 'w', encoding='utf-8') as f:
             f.write(text)
+        self.log.insert(tk.END, f'已儲存至: {subdir}\n')
+        self.log.see(tk.END)
         # go next or finish
         if self.current < len(self.clips) - 1:
             self.current += 1

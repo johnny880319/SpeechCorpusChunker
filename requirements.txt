@@ -4,3 +4,4 @@ dacite
 torchaudio
 faster-whisper
 soundfile
+OpenCC

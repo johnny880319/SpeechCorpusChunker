@@ -1,5 +1,7 @@
 from faster_whisper import WhisperModel
+from opencc import OpenCC
 
+# my module
 from .base_asr import AbstractASR
 
 
@@ -15,6 +17,7 @@ class FasterWhisperASR(AbstractASR):
             device='auto',
             compute_type='int8'
         )
+        self.opencc = OpenCC('s2t')
 
     def transcribe(self, wav_path: str) -> str:
         """
@@ -27,4 +30,6 @@ class FasterWhisperASR(AbstractASR):
         )
         # segments is a list of Segment objects with `.text` attribute
         transcript = ''.join([seg.text for seg in segments])
+        # Transform simplified Chinese to traditional Chinese
+        transcript = self.opencc.convert(transcript)
         return transcript

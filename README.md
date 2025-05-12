@@ -71,7 +71,7 @@ This project is released under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## Acknowledgments
 - **Silero VAD** by [snakers4](https://github.com/snakers4/silero-vad) (MIT License)
-- **Faster Whisper** by [guillaumekln](https://github.com/guillaumekln/faster-whisper) (MIT License)
+- **Faster Whisper** by [SYSTRAN](https://github.com/guillaumekln/faster-whisper) (MIT License)
 - **Streamlit** (MIT License)
 - **yt-dlp** (Unlicense/MIT)
 - **FFmpeg** (LGPL/GPL)
